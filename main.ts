@@ -41,9 +41,9 @@ export default class AdditionalIconsPlugin extends Plugin {
 		svgDom.querySelectorAll("glyph").forEach((el) => {
 			addIcon(
 				`${prefix}-${el.getAttribute("glyph-name")}`,
-				`<path d=${el.getAttribute("d")}/>`
+				`<path transform="matrix(0.09765625 0 0 -0.09765625 0, 99.2)" d="${el.getAttribute("d")}"/>`
 			);
-			console.log("Adding", `${prefix}-${el.getAttribute("glyph-name")}`);
+			console.log("Adding", `${prefix}-${el.getAttribute("glyph-name")} with transform`);
 		});
 	}
 

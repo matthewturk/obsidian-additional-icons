@@ -17,9 +17,11 @@ const context = await esbuild.context({
 	},
 	entryPoints: ["main.ts"],
 	bundle: true,
+	loader: {'.svg': 'text'},
 	external: [
 		"obsidian",
 		"electron",
+		"react",
 		"@codemirror/autocomplete",
 		"@codemirror/collab",
 		"@codemirror/commands",
@@ -37,7 +39,7 @@ const context = await esbuild.context({
 	logLevel: "info",
 	sourcemap: prod ? false : "inline",
 	treeShaking: true,
-	outfile: "main.js",
+	outfile: "main.js"
 });
 
 if (prod) {
