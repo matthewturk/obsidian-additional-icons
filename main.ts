@@ -8,16 +8,20 @@ import {
 	PluginSettingTab,
 	Setting,
 } from "obsidian";
+
 import rpgAwesomeSvgStr from "./node_modules/rpg-awesome/fonts/rpgawesome-webfont.svg";
+import govIconsSvgStr from "./node_modules/govicons/fonts/govicons-webfont.svg";
 
 // Remember to rename these classes and interfaces!
 
 interface AdditionalIconsPluginSettings {
 	useRpgAwesome: boolean;
+	useGovIcons: boolean;
 }
 
 const DEFAULT_SETTINGS: AdditionalIconsPluginSettings = {
 	useRpgAwesome: true,
+	useGovIcons: true,
 };
 
 export default class AdditionalIconsPlugin extends Plugin {
@@ -31,6 +35,9 @@ export default class AdditionalIconsPlugin extends Plugin {
 
 		if (this.settings.useRpgAwesome) {
 			await this.addIconsToObsidian(rpgAwesomeSvgStr, "ra");
+		}
+		if (this.settings.useGovIcons) {
+			await this.addIconsToObsidian(govIconsSvgStr, "gi");
 		}
 	}
 
@@ -101,6 +108,20 @@ class AdditionalIconsSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.useRpgAwesome = value;
 						console.log("Setting to ", value);
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("GovIcons")
+			.setDesc(
+				"Use Government Icons from https://govicons.io/"
+			)
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.useGovIcons)
+					.onChange(async (value) => {
+						this.plugin.settings.useGovIcons = value;
 						await this.plugin.saveSettings();
 					})
 			);
