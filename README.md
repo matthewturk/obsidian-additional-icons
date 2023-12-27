@@ -3,7 +3,14 @@ This plugin adds additional icons for use anywhere obsidian normally uses the se
 
 At present, it includes:
 
- - [RPG Awesome](https://nagoshiashumari.github.io/Rpg-Awesome/)
- - [GovIcons](https://govicons.io/)
+| Icon Library | License |
+|-|-|
+| [RPG Awesome](https://nagoshiashumari.github.io/Rpg-Awesome/) | [SIL OFL 1.1](https://openfontlicense.org/) |
+| [GovIcons](https://govicons.io/) | [SIL OFL 1.1](https://openfontlicense.org/) |
+| [Weather Icons](https://erikflowers.github.io/weather-icons/) | [SIL OFL 1.1](https://openfontlicense.org/) |
 
-Each iconset is bundled, but can be toggled.
+Each iconset is bundled with the built plugin, but can be toggled.
+
+# License
+
+This repository is licensed under the BSD 2-Clause license.  The fonts bundled with the built version are licensed as noted above.

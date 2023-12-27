@@ -3,7 +3,6 @@ import {
 	addIcon,
 	removeIcon,
 	App,
-	Modal,
 	Plugin,
 	PluginSettingTab,
 	Setting,
@@ -12,16 +11,37 @@ import {
 import rpgAwesomeSvgStr from "./node_modules/rpg-awesome/fonts/rpgawesome-webfont.svg";
 import govIconsSvgStr from "./node_modules/govicons/fonts/govicons-webfont.svg";
 
-// Remember to rename these classes and interfaces!
+interface iconSets {
+	name: string;
+	description: string;
+	prefix: string;
+	contents: string;
+}
+
+const availableIcons: iconSets[] = [
+	{
+		name: "RPG Awesome",
+		description:
+			"The RPG Awesome Icon Set from https://nagoshiashumari.github.io/Rpg-Awesome/",
+		prefix: "ra",
+		contents: rpgAwesomeSvgStr,
+	},
+	{
+		name: "GovIcons",
+		description: "Government Icons from https://govicons.io/",
+		prefix: "gi",
+		contents: govIconsSvgStr,
+	},
+];
 
 interface AdditionalIconsPluginSettings {
-	useRpgAwesome: boolean;
-	useGovIcons: boolean;
+	useIconsets: {
+		[key: string]: boolean;
+	};
 }
 
 const DEFAULT_SETTINGS: AdditionalIconsPluginSettings = {
-	useRpgAwesome: true,
-	useGovIcons: true,
+	useIconsets: Object.fromEntries(availableIcons.map((k) => [k.name, true])),
 };
 
 export default class AdditionalIconsPlugin extends Plugin {
@@ -29,16 +49,16 @@ export default class AdditionalIconsPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+		console.log(DEFAULT_SETTINGS);
 
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new AdditionalIconsSettingTab(this.app, this));
 
-		if (this.settings.useRpgAwesome) {
-			await this.addIconsToObsidian(rpgAwesomeSvgStr, "ra");
-		}
-		if (this.settings.useGovIcons) {
-			await this.addIconsToObsidian(govIconsSvgStr, "gi");
-		}
+		availableIcons.forEach(async (iconSet) => {
+			if (this.settings.useIconsets[iconSet.name]) {
+				await this.addIconsToObsidian(iconSet.contents, iconSet.prefix);
+			}
+		});
 	}
 
 	async addIconsToObsidian(
@@ -47,6 +67,9 @@ export default class AdditionalIconsPlugin extends Plugin {
 	): Promise<void> {
 		const parser = new DOMParser();
 		const svgDom = parser.parseFromString(svgFontString, "image/svg+xml");
+		// Ultimately, the transform should be determined from the glyph
+		// attributes like ascent and descent attributes.  For icons generated
+		// with icomoon this should be sufficient for now.
 		svgDom.querySelectorAll("glyph").forEach((el) => {
 			addIcon(
 				`${prefix}-${el.getAttribute("glyph-name")}`,
@@ -54,15 +77,15 @@ export default class AdditionalIconsPlugin extends Plugin {
 					"d"
 				)}"/>`
 			);
-			console.log(
-				"Adding",
-				`${prefix}-${el.getAttribute("glyph-name")} with transform`
-			);
 		});
 	}
 
 	async onunload() {
-		await this.removePrefixedIcons("ra");
+		availableIcons.forEach(async (iconSet) => {
+			if (this.settings.useIconsets[iconSet.name]) {
+				await this.removePrefixedIcons(iconSet.prefix);
+			}
+		});
 	}
 
 	async removePrefixedIcons(prefix: string): Promise<void> {
@@ -97,33 +120,21 @@ class AdditionalIconsSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl)
-			.setName("RPG Awesome")
-			.setDesc(
-				"Use RPG Awesome Icon Set from https://nagoshiashumari.github.io/Rpg-Awesome/"
-			)
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.useRpgAwesome)
-					.onChange(async (value) => {
-						this.plugin.settings.useRpgAwesome = value;
-						console.log("Setting to ", value);
-						await this.plugin.saveSettings();
-					})
-			);
-
-		new Setting(containerEl)
-			.setName("GovIcons")
-			.setDesc(
-				"Use Government Icons from https://govicons.io/"
-			)
-			.addToggle((toggle) =>
-				toggle
-					.setValue(this.plugin.settings.useGovIcons)
-					.onChange(async (value) => {
-						this.plugin.settings.useGovIcons = value;
-						await this.plugin.saveSettings();
-					})
-			);
+		availableIcons.forEach((iconSet) => {
+			new Setting(containerEl)
+				.setName(iconSet.name)
+				.setDesc(iconSet.description)
+				.addToggle((toggle) =>
+					toggle
+						.setValue(
+							this.plugin.settings.useIconsets[iconSet.name]
+						)
+						.onChange(async (value) => {
+							this.plugin.settings.useIconsets[iconSet.name] =
+								value;
+							await this.plugin.saveSettings();
+						})
+				);
+		});
 	}
 }
