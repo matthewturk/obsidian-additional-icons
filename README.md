@@ -11,6 +11,17 @@ At present, it includes:
 
 Each iconset is bundled with the built plugin, but can be toggled.
 
+# Example Usage
+
+I tend to use a lot of `fileClass`es from [metadata
+menu](https://mdelobelle.github.io/metadatamenu/), and often use the `icon`
+field to give the files individual icons based on their type.  I found myself
+wanting to use different icons than those available in the default Lucide set
+that came with Obsidian.  So now you can use things like `ra-axe`, `gi-dna` and
+`wi-tornado` to decorate your files.
+
 # License
 
-This repository is licensed under the BSD 2-Clause license.  The fonts bundled with the built version are licensed as noted above.
+This repository is licensed under the BSD 3-Clause license.  The fonts bundled
+with the built version (which are not distributed with source) are licensed as
+noted above.
