@@ -25,3 +25,7 @@ that came with Obsidian.  So now you can use things like `ra-axe`, `gi-dna` and
 This repository is licensed under the BSD 3-Clause license.  The fonts bundled
 with the built version (which are not distributed with source) are licensed as
 noted above.
+
+# Funding
+
+If you find this plugin useful, please consider donating to the [Cystic Fibrosis Foundation](https://give.cff.org/).
